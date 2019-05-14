@@ -17,6 +17,8 @@ PCF8574A_address = 0x3F  # I2C address of the PCF8574A chip.
 pins = {'pin_R':33, 'pin_G':12, 'pin_B':13}  # pins is a dict
 buzzerPin = 36
 
+statusMessage = False
+
 def setup():
 	global p_R,p_G,p_B
 	print ('Program is starting ... ')
@@ -84,15 +86,18 @@ def ton():
 	GPIO.output(buzzerPin,GPIO.LOW)
 
 def STATMess():
-	global mes
-	mes="   SolidShot   "
-	lcd.clear()
-	lcd.message( mes+'\n' )
-	lcd.message( datetime.now().strftime('   %d %b %Y') )
+	if statusMessage == False:
+		global mes
+		mes="   SolidShot   "
+		lcd.clear()
+		lcd.message( mes+'\n' )
+		lcd.message( datetime.now().strftime('   %d %b %Y') )	
+	
 
 # This loop keeps checking for chips. If one is near it will get the UID and authenticate
 while continue_reading:
     STATMess()
+    statusMessage = True
     # Scan for cards    
     (status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
 
@@ -121,4 +126,5 @@ while continue_reading:
         sleep(3)
         lcd.clear()
         continue_reading = True
+        statusMessage = False
 
