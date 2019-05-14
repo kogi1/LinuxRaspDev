@@ -13,6 +13,22 @@ from datetime import datetime
 
 PCF8574_address = 0x27  # I2C address of the PCF8574 chip.
 PCF8574A_address = 0x3F  # I2C address of the PCF8574A chip.
+
+pins = {'pin_R':33, 'pin_G':12, 'pin_B':13}  # pins is a dict
+
+def setup():
+	global p_R,p_G,p_B
+	print ('Program is starting ... ')
+	GPIO.setmode(GPIO.BOARD)       # Numbers GPIOs by physical location
+	for i in pins:
+		GPIO.setup(pins[i], GPIO.OUT)   # Set pins' mode is output
+		GPIO.output(pins[i], GPIO.HIGH) # Set pins to high(+3.3V) to off led
+	p_R = GPIO.PWM(pins['pin_R'], 2000)  # set Frequece to 2KHz
+	p_G = GPIO.PWM(pins['pin_G'], 2000)
+	p_B = GPIO.PWM(pins['pin_B'], 2000)
+	p_R.start(0)      # Initial duty Cycle = 0
+	p_G.start(0)
+	p_B.start(0)
 # Create PCF8574 GPIO adapter.
 try:
 	mcp = PCF8574_GPIO(PCF8574_address)
@@ -28,11 +44,19 @@ lcd = Adafruit_CharLCD(pin_rs=0, pin_e=2, pins_db=[4,5,6,7], GPIO=mcp)
 continue_reading = True
 
 # Capture SIGINT for cleanup when the script is aborted
+def destroy():
+	p_R.stop()
+	p_G.stop()
+	p_B.stop()
+	GPIO.cleanup()	
+
 def end_read(signal,frame):
     global continue_reading
     print ("Ctrl+C captured, ending read.")
     continue_reading = False
     GPIO.cleanup()
+	destroy()
+
 
 # Hook the SIGINT
 signal.signal(signal.SIGINT, end_read)
@@ -44,8 +68,14 @@ lcd.begin(16,2)     # set number of LCD lines and columns
 MIFAREReader = MFRC522.MFRC522()
 
 # Welcome message
+setup()
 print ("Welcome to the MFRC522 data read example")
 print ("Press Ctrl-C to stop.")
+def setColor(r_val,g_val,b_val):   
+	p_R.ChangeDutyCycle(r_val)     # Change duty cycle
+	p_G.ChangeDutyCycle(g_val)
+	p_B.ChangeDutyCycle(b_val)
+
 
 # This loop keeps checking for chips. If one is near it will get the UID and authenticate
 while continue_reading:
@@ -67,11 +97,13 @@ while continue_reading:
         print ("Card read UID: "+str(uid[0])+","+str(uid[1])+","+str(uid[2])+","+str(uid[3]))
         lcd.setCursor(0,0)
         lcd.message( 'Reading...' )
+		setColor(255,153,102)
         sleep(2)
         lcd.clear()
-        lcd.message( 'Card read UID:' )# display CPU temperature
+		setColor(0,255,0)
+        lcd.message( 'Card read UID:'+'\n' )# display CPU temperature
         lcd.message( str(uid[0])+","+str(uid[1])+","+str(uid[2])+","+str(uid[3]))
-        sleep(5)
+        sleep(3)
         lcd.clear()
         continue_reading = True
     
