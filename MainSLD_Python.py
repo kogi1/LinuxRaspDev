@@ -15,11 +15,13 @@ PCF8574_address = 0x27  # I2C address of the PCF8574 chip.
 PCF8574A_address = 0x3F  # I2C address of the PCF8574A chip.
 
 pins = {'pin_R':33, 'pin_G':12, 'pin_B':13}  # pins is a dict
+buzzerPin = 11
 
 def setup():
 	global p_R,p_G,p_B
 	print ('Program is starting ... ')
 	GPIO.setmode(GPIO.BOARD)       # Numbers GPIOs by physical location
+	GPIO.setup(buzzerPin, GPIO.OUT)
 	for i in pins:
 		GPIO.setup(pins[i], GPIO.OUT)   # Set pins' mode is output
 		GPIO.output(pins[i], GPIO.HIGH) # Set pins to high(+3.3V) to off led
@@ -48,6 +50,7 @@ def destroy():
 	p_R.stop()
 	p_G.stop()
 	p_B.stop()
+	GPIO.output(buzzerPin, GPIO.LOW)
 	GPIO.cleanup()	
 
 def end_read(signal,frame):
@@ -75,6 +78,10 @@ def setColor(r_val,g_val,b_val):
 	p_G.ChangeDutyCycle(g_val)
 	p_B.ChangeDutyCycle(b_val)
 
+def ton():
+	GPIO.output(buzzerPin,GPIO.HIGH)
+	sleep(0.5)
+	GPIO.output(buzzerPin,GPIO.LOW)
 
 # This loop keeps checking for chips. If one is near it will get the UID and authenticate
 while continue_reading:
@@ -97,7 +104,8 @@ while continue_reading:
         lcd.setCursor(0,0)
         lcd.message( 'Reading...' )
         setColor(100,60,0)
-        sleep(2)
+        ton()
+        sleep(1)
         lcd.clear()
         setColor(0,100,0)
         lcd.message( 'Card read UID:'+'\n' )# display CPU temperature
