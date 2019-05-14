@@ -107,7 +107,7 @@ while continue_reading:
         ton()
         sleep(1)
         lcd.clear()
-        setColor(100,0,0)
+        setColor(0,0,100)
         lcd.message( 'Card read UID:'+'\n' )# display CPU temperature
         lcd.message( str(uid[0])+","+str(uid[1])+","+str(uid[2])+","+str(uid[3]))
         sleep(3)
