@@ -83,9 +83,16 @@ def ton():
 	sleep(0.3)
 	GPIO.output(buzzerPin,GPIO.LOW)
 
+def STATMess():
+	global mes
+	mes="   SolidShot   "
+	lcd.clear()
+	lcd.message( mes+'\n' )
+	lcd.message( datetime.now().strftime('   %d %b %Y') )
+
 # This loop keeps checking for chips. If one is near it will get the UID and authenticate
 while continue_reading:
-    
+    STATMess()
     # Scan for cards    
     (status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
 
@@ -100,6 +107,7 @@ while continue_reading:
     if status == MIFAREReader.MI_OK:
 
         # Print UID
+        lcd.clear()
         print ("Card read UID: "+str(uid[0])+","+str(uid[1])+","+str(uid[2])+","+str(uid[3]))
         lcd.setCursor(0,0)
         lcd.message( 'Reading...' )
@@ -113,20 +121,4 @@ while continue_reading:
         sleep(3)
         lcd.clear()
         continue_reading = True
-    
-        # This is the default key for authentication
-        key = [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]
-        
-        # Select the scanned tag
-        MIFAREReader.MFRC522_SelectTag(uid)
-
-        # Authenticate
-        status = MIFAREReader.MFRC522_Auth(MIFAREReader.PICC_AUTHENT1A, 8, key, uid)
-
-        # Check if authenticated
-        if status == MIFAREReader.MI_OK:
-            MIFAREReader.MFRC522_Read(8)
-            MIFAREReader.MFRC522_StopCrypto1()
-        else:
-            print ("Authentication error")
 
