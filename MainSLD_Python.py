@@ -103,7 +103,7 @@ while continue_reading:
         print ("Card read UID: "+str(uid[0])+","+str(uid[1])+","+str(uid[2])+","+str(uid[3]))
         lcd.setCursor(0,0)
         lcd.message( 'Reading...' )
-        setColor(100,0,0)
+        setColor(0,100,0)
         ton()
         sleep(0.5)
         lcd.clear()
