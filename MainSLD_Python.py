@@ -80,7 +80,7 @@ def setColor(r_val,g_val,b_val):
 
 def ton():
 	GPIO.output(buzzerPin,GPIO.HIGH)
-	sleep(0.5)
+	sleep(0.3)
 	GPIO.output(buzzerPin,GPIO.LOW)
 
 # This loop keeps checking for chips. If one is near it will get the UID and authenticate
