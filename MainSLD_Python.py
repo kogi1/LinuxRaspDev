@@ -91,7 +91,7 @@ def STATMess():
 		mes="   SolidShot   "
 		lcd.clear()
 		lcd.message( mes+'\n' )
-		lcd.message( datetime.now().strftime('   %d %b %Y') )	
+		lcd.message( datetime.now().strftime('  %d %b %Y') )	
 	
 
 # This loop keeps checking for chips. If one is near it will get the UID and authenticate
