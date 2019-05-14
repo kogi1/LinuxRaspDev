@@ -15,7 +15,7 @@ PCF8574_address = 0x27  # I2C address of the PCF8574 chip.
 PCF8574A_address = 0x3F  # I2C address of the PCF8574A chip.
 
 pins = {'pin_R':33, 'pin_G':12, 'pin_B':13}  # pins is a dict
-buzzerPin = 11
+buzzerPin = 36
 
 def setup():
 	global p_R,p_G,p_B
