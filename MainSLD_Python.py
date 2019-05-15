@@ -91,7 +91,8 @@ def STATMess():
 		mes="   SolidShot   "
 		lcd.clear()
 		lcd.message( mes+'\n' )
-		lcd.message( datetime.now().strftime('  %d %b %Y') )	
+		lcd.message( datetime.now().strftime('  %d %b %Y') )
+		setColor(0,0,0)
 	
 
 # This loop keeps checking for chips. If one is near it will get the UID and authenticate
@@ -120,7 +121,7 @@ while continue_reading:
         ton()
         sleep(0.5)
         lcd.clear()
-        setColor(0,50,0)
+        setColor(41,44,66)
         lcd.message( 'Card read UID:'+'\n' )# display CPU temperature
         lcd.message( str(uid[0])+","+str(uid[1])+","+str(uid[2])+","+str(uid[3]))
         sleep(3)
