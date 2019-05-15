@@ -19,7 +19,7 @@ buzzerPin = 36
 
 statusMessage = False
 color_Green = 0x00FF40
-color_Orange = 0xFF8000
+color_Orange = 0xFFBF00
 color_Red = 0xFF0000
 color_Blue = 0x0000FF
 
