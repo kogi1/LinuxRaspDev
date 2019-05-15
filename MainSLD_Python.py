@@ -18,6 +18,11 @@ pins = {'pin_R':33, 'pin_G':12, 'pin_B':13}  # pins is a dict
 buzzerPin = 36
 
 statusMessage = False
+color_Green = 0x00FF40
+color_Orange = 0xFF8000
+color_Red = 0xFF0000
+color_Blue = 0x0000FF
+
 
 def setup():
 	global p_R,p_G,p_B
@@ -56,11 +61,11 @@ def destroy():
 	GPIO.cleanup()	
 
 def end_read(signal,frame):
-    global continue_reading
-    print ("Ctrl+C captured, ending read.")
-    continue_reading = False
-    GPIO.cleanup()
-    destroy()
+	global continue_reading
+	print ("Ctrl+C captured, ending read.")
+	continue_reading = False
+	GPIO.cleanup()
+	destroy()
 	
 # Hook the SIGINT
 signal.signal(signal.SIGINT, end_read)
@@ -75,10 +80,21 @@ MIFAREReader = MFRC522.MFRC522()
 setup()
 print ("Welcome to the MFRC522 data read example")
 print ("Press Ctrl-C to stop.")
-def setColor(r_val,g_val,b_val):   
-	p_R.ChangeDutyCycle(r_val)     # Change duty cycle
-	p_G.ChangeDutyCycle(g_val)
-	p_B.ChangeDutyCycle(b_val)
+def map(x, in_min, in_max, out_min, out_max):
+	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+
+def setColor(col):   # For example : col = 0x112233
+	R_val = (col & 0x110000) >> 16
+	G_val = (col & 0x001100) >> 8
+	B_val = (col & 0x000011) >> 0
+
+	R_val = map(R_val, 0, 255, 0, 100)
+	G_val = map(G_val, 0, 255, 0, 100)
+	B_val = map(B_val, 0, 255, 0, 100)
+
+	p_R.ChangeDutyCycle(100-R_val)     # Change duty cycle
+	p_G.ChangeDutyCycle(100-G_val)
+	p_B.ChangeDutyCycle(100-B_val)
 
 def ton():
 	GPIO.output(buzzerPin,GPIO.HIGH)
@@ -92,40 +108,53 @@ def STATMess():
 		lcd.clear()
 		lcd.message( mes+'\n' )
 		lcd.message( datetime.now().strftime('  %d %b %Y') )
-		setColor(0,0,0)
-	
+		setColor(color_Blue)
+
+
 
 # This loop keeps checking for chips. If one is near it will get the UID and authenticate
 while continue_reading:
-    STATMess()
-    statusMessage = True
-    # Scan for cards    
-    (status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
+	STATMess()
+	statusMessage = True
+	# Scan for cards
+	(status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
 
-    # If a card is found
+	# If a card is found
     if status == MIFAREReader.MI_OK:
-        print ("Card detected")
-        continue_reading = False
-    # Get the UID of the card
+		print ("Card detected")
+		continue_reading = False
+	# Get the UID of the card
     (status,uid) = MIFAREReader.MFRC522_Anticoll()
 
-    # If we have the UID, continue
-    if status == MIFAREReader.MI_OK:
+	# If we have the UID, continue
+	if status == MIFAREReader.MI_OK:
+		lcd.clear()
+		print ("Card read UID: "+str(uid[0])+","+str(uid[1])+","+str(uid[2])+","+str(uid[3]))
+		lcd.setCursor(0,0)
+		lcd.message( 'Reading...' )
+		setColor(color_Orange)
+		ton()
+		sleep(0.5)
+		lcd.clear()
+		setColor(color_Green)
+		lcd.message( 'Card read UID:'+'\n' )# display CPU temperature
+		lcd.message( str(uid[0])+","+str(uid[1])+","+str(uid[2])+","+str(uid[3]))
+		sleep(3)
+		lcd.clear()
+		continue_reading = True
+		statusMessage = False
+	else:
+		lcd.clear()
+		setColor(color_Red)
+		lcd.message( ' Error Reading '+'\n' )
+		lcd.message( '   Pls Retry   ' )
+		ton()
+		ton()
+		sleep(3)
+		lcd.clear()
+		continue_reading = True
+		statusMessage = False
 
-        # Print UID
-        lcd.clear()
-        print ("Card read UID: "+str(uid[0])+","+str(uid[1])+","+str(uid[2])+","+str(uid[3]))
-        lcd.setCursor(0,0)
-        lcd.message( 'Reading...' )
-        setColor(0,100,0)
-        ton()
-        sleep(0.5)
-        lcd.clear()
-        setColor(41,44,66)
-        lcd.message( 'Card read UID:'+'\n' )# display CPU temperature
-        lcd.message( str(uid[0])+","+str(uid[1])+","+str(uid[2])+","+str(uid[3]))
-        sleep(3)
-        lcd.clear()
-        continue_reading = True
-        statusMessage = False
+
+
 
