@@ -151,14 +151,3 @@ while continue_reading:
 		lcd.clear()
 		continue_reading = True
 		statusMessage = False
-	else:
-		lcd.clear()
-		setColor(color_Red)
-		lcd.message(' Error Reading '+'\n')
-		lcd.message('   Pls Retry   ')
-		ton()
-		ton()
-		sleep(3)
-		lcd.clear()
-		continue_reading = True
-		statusMessage = False
