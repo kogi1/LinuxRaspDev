@@ -12,7 +12,7 @@ from time import sleep, strftime
 from datetime import datetime
 
 PCF8574_address = 0x27  # I2C address of the PCF8574 chip.
-PCF8574A_address = 0x3F  # I2C address of the PCF8574A chip.
+PCF8574A_address = 0x3F  #  I2C  address of the PCF8574A chip.
 
 pins = {'pin_R':33, 'pin_G':12, 'pin_B':13}  # pins is a dict
 buzzerPin = 36
@@ -22,7 +22,7 @@ statusMessage = False
 def setup():
 	global p_R,p_G,p_B
 	print ('Program is starting ... ')
-	GPIO.setmode(GPIO.BOARD)       # Numbers GPIOs by physical location
+	GPIO.setmode(GPIO.BOARD)       # Numbersads GPIOs by physical location
 	GPIO.setup(buzzerPin, GPIO.OUT)
 	for i in pins:
 		GPIO.setup(pins[i], GPIO.OUT)   # Set pins' mode is output
