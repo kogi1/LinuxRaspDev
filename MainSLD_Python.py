@@ -150,7 +150,7 @@ while continue_reading:
 		uidtosend = str(uid[0])+"-"+str(uid[1])+"-"+str(uid[2])+"-"+str(uid[3])
 		params = {'uid': uidtosend}
 		response = requests.get('https://admin.solidshot.at/DBA/uid.php', params=params)
-		print(response.content)
+		print(response.text)
 
 		setColor(color_Green)
 
