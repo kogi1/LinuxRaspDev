@@ -11,8 +11,8 @@ from Adafruit_LCD1602 import Adafruit_CharLCD
 from time import sleep, strftime
 from datetime import datetime
 
-PCF8574_address = 0x27  # I2C address of the PCF8574 chip.
-PCF8574A_address = 0x3F  #  I2C  address of the PCF8574A chip.
+PCF8574_address = 0x27  #I2C address of the PCF8574 chip.lul
+PCF8574A_address = 0x3F  #I2C  address of the PCF8574A chip.
 
 pins = {'pin_R':33, 'pin_G':12, 'pin_B':13}  # pins is a dict
 buzzerPin = 36
