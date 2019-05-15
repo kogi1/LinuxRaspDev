@@ -4,8 +4,8 @@
 import RPi.GPIO as GPIO
 import MFRC522
 import signal
-from urllib2 import urlopen
-from urllib import urlencode
+
+import requests
 
 from PCF8574 import PCF8574_GPIO
 from Adafruit_LCD1602 import Adafruit_CharLCD
@@ -148,9 +148,9 @@ while continue_reading:
 		lcd.clear()
 
 		uidtosend = str(uid[0])+"-"+str(uid[1])+"-"+str(uid[2])+"-"+str(uid[3])
-		params = urlencode({'uid': uidtosend})
-		response = urlopen('https://admin.solidshot.at/DBA/uid.php?' + params)
-		print(response.read())
+		params = {'uid': uidtosend}
+		response = requests.get('https://admin.solidshot.at/DBA/uid.php', params=params)
+		print(response.content)
 
 		setColor(color_Green)
 
