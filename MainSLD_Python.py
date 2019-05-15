@@ -154,7 +154,7 @@ while continue_reading:
 
 		setColor(color_Green)
 
-		lcd.message('Guten Tag: '+response.text+'\n')  # display CPU temperature
+		lcd.message('Guten Tag '+response.text+'\n')  # display CPU temperature
 		lcd.message('Stamped: '+datetime.now().strftime('%H:%M'))
 		sleep(3)
 		lcd.clear()
