@@ -4,6 +4,8 @@
 import RPi.GPIO as GPIO
 import MFRC522
 import signal
+from urllib2 import urlopen
+from urllib import urlencode
 
 from PCF8574 import PCF8574_GPIO
 from Adafruit_LCD1602 import Adafruit_CharLCD
@@ -31,7 +33,7 @@ def setup():
 	GPIO.setup(buzzerPin, GPIO.OUT)
 	for i in pins:
 		GPIO.setup(pins[i], GPIO.OUT)   # Set pins' mode is output
-		GPIO.output(pins[i], GPIO.HIGH) # Set pins to high(+3.3V) to off led
+		GPIO.output(pins[i], GPIO.HIGH)  # Set pins to high(+3.3V) to off led
 	p_R = GPIO.PWM(pins['pin_R'], 2000)  # set Frequece to 2KHz
 	p_G = GPIO.PWM(pins['pin_G'], 2000)
 	p_B = GPIO.PWM(pins['pin_B'], 2000)
@@ -47,7 +49,7 @@ except:
 	try:
 		mcp = PCF8574_GPIO(PCF8574A_address)
 	except:
-		print ('I2C Address Error !')
+		print('I2C Address Error !')
 		exit(1)
 # Create LCD, passing in MCP GPIO adapter.
 lcd = Adafruit_CharLCD(pin_rs=0, pin_e=2, pins_db=[4, 5, 6, 7], GPIO=mcp)
@@ -61,7 +63,7 @@ def destroy():
 	p_G.stop()
 	p_B.stop()
 	GPIO.output(buzzerPin, GPIO.LOW)
-	GPIO.cleanup()	
+	GPIO.cleanup()
 
 
 def end_read(signal, frame):
@@ -144,7 +146,14 @@ while continue_reading:
 		ton()
 		sleep(0.5)
 		lcd.clear()
+
+		uidtosend = str(uid[0])+"-"+str(uid[1])+"-"+str(uid[2])+"-"+str(uid[3])
+		params = urlencode({'uid': uidtosend})
+		response = urlopen('https://admin.solidshot.at/DBA/uid.php?' + params)
+		print(response.read())
+
 		setColor(color_Green)
+
 		lcd.message('Card read UID:'+'\n')  # display CPU temperature
 		lcd.message(str(uid[0])+","+str(uid[1])+","+str(uid[2])+","+str(uid[3]))
 		sleep(3)
