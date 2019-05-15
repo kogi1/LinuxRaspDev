@@ -154,8 +154,8 @@ while continue_reading:
 
 		setColor(color_Green)
 
-		lcd.message('Card read UID:'+'\n')  # display CPU temperature
-		lcd.message(str(uid[0])+","+str(uid[1])+","+str(uid[2])+","+str(uid[3]))
+		lcd.message('Guten Tag: '+response.text+'\n')  # display CPU temperature
+		lcd.message('Stamped: '+datetime.now().strftime('%H:%M'))
 		sleep(3)
 		lcd.clear()
 		continue_reading = True
